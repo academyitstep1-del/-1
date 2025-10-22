@@ -1,0 +1,69 @@
+# Клас співробітника
+class Employee:
+    def __init__(self, name, position, salary):
+        self.name = name
+        self.position = position
+        self.salary = salary
+
+    def get_info(self):
+        return f"{self.name} — {self.position}, Зарплата: {self.salary} грн"
+
+
+# Клас відділу
+class Department:
+    def __init__(self, name):
+        self.name = name
+        self.employees = []
+
+    def add_employee(self, employee):
+        self.employees.append(employee)
+        print(f"✅ Співробітника {employee.name} додано у відділ {self.name}")
+
+    def remove_employee(self, name):
+        for emp in self.employees:
+            if emp.name == name:
+                self.employees.remove(emp)
+                print(f"❌ Співробітника {name} видалено з відділу {self.name}")
+                return
+        print(f"⚠️ Співробітника з ім'ям {name} не знайдено")
+
+    def get_total_salary(self):
+        total = sum(emp.salary for emp in self.employees)
+        return total
+
+    def show_all_employees(self):
+        if not self.employees:
+            print("📭 У відділі немає співробітників.")
+        else:
+            print(f"👥 Список співробітників у відділі {self.name}:")
+            for emp in self.employees:
+                print(" -", emp.get_info())
+
+
+# ====== Перевірка роботи ======
+if __name__ == "__main__":
+    # Створюємо кілька співробітників
+    emp1 = Employee("Іван Петренко", "Менеджер", 25000)
+    emp2 = Employee("Оксана Коваль", "Бухгалтер", 22000)
+    emp3 = Employee("Петро Іванов", "Інженер", 28000)
+
+    # Створюємо відділ
+    dept = Department("Адміністрація")
+
+    # Додаємо співробітників
+    dept.add_employee(emp1)
+    dept.add_employee(emp2)
+    dept.add_employee(emp3)
+
+    # Виводимо список
+    dept.show_all_employees()
+
+    # Підраховуємо суму зарплат
+    print(f"\n💰 Загальна зарплата відділу: {dept.get_total_salary()} грн")
+
+    # Видаляємо одного працівника
+    dept.remove_employee("Оксана Коваль")
+
+    # Перевіряємо знову
+    dept.show_all_employees()
+    print(f"\n💰 Після видалення загальна зарплата: {dept.get_total_salary()} грн")
