@@ -1,0 +1,24 @@
+def safe_calculator(func):
+    def wrapper(expression):
+        try:
+            result = func(expression)
+        except ZeroDivisionError:
+            return "Помилка: ділення на нуль!"
+        except SyntaxError:
+            return "Помилка: неправильний вираз!"
+        except Exception as e:
+            return f"Невідома помилка: {e}"
+        else:
+            return f"Результат: {result}"
+    return wrapper
+
+
+@safe_calculator
+def calculate(expression):
+    return eval(expression)
+
+
+# Приклади
+print(calculate("2 + 2"))
+print(calculate("10 / 0"))
+print(calculate("5 *"))
