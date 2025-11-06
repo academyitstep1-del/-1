@@ -1,0 +1,49 @@
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+import time
+
+BASE_URL = "http://books.toscrape.com/"
+
+def get_soup(url):
+    """Отримуємо HTML сторінки та створюємо об'єкт BeautifulSoup"""
+    response = requests.get(url)
+    response.raise_for_status()
+    return BeautifulSoup(response.text, "html.parser")
+
+def scrape_titles():
+    """Витягує всі назви книг з усіх сторінок"""
+    titles = []
+    url = BASE_URL
+
+    while url:
+        print(f"Отримую сторінку: {url}")
+        soup = get_soup(url)
+
+        # знаходимо всі теги <h3><a title="...">
+        for h3 in soup.find_all("h3"):
+            a_tag = h3.find("a")
+            if a_tag and a_tag.get("title"):
+                titles.append(a_tag["title"])
+
+        # знаходимо лінк на наступну сторінку (якщо є)
+        next_button = soup.select_one("li.next > a")
+        if next_button:
+            next_page = next_button["href"]
+            url = urljoin(url, next_page)
+            time.sleep(0.2)  # невелика пауза між сторінками
+        else:
+            url = None
+
+    return titles
+
+if __name__ == "__main__":
+    all_titles = scrape_titles()
+    print(f"Знайдено {len(all_titles)} книг.")
+
+    # Зберігаємо у файл
+    with open("book_titles.txt", "w", encoding="utf-8") as f:
+        for title in all_titles:
+            f.write(title + "\n")
+
+    print("Назви збережено у файл book_titles.txt")
