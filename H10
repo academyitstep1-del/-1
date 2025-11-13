@@ -1,0 +1,102 @@
+import sqlite3
+
+# ============================================================
+# ЗАВДАННЯ 1. Робота з базою даних "AnimalKingdom"
+# ============================================================
+
+# 1. Підключення до бази даних (створиться, якщо її немає)
+conn1 = sqlite3.connect('AnimalKingdom.db')
+cursor1 = conn1.cursor()
+
+# 2. Створення таблиці Animals
+cursor1.execute('''
+CREATE TABLE IF NOT EXISTS Animals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    type TEXT
+)
+''')
+
+# 3. Очищення таблиці (на випадок повторного запуску)
+cursor1.execute("DELETE FROM Animals")
+
+# 4. Додавання записів
+animals = [
+    ("Лев", "Ссавець"),
+    ("Крокодил", "Плазун"),
+    ("Орел", "Птах"),
+    ("Морська черепаха", "Плазун"),
+    ("Мавпа", "Ссавець")
+]
+cursor1.executemany("INSERT INTO Animals (name, type) VALUES (?, ?)", animals)
+conn1.commit()
+
+# 5. Змінюємо назву "Орел" на "Сокіл"
+cursor1.execute("UPDATE Animals SET name = 'Сокіл' WHERE name = 'Орел'")
+conn1.commit()
+
+# 6. Вибираємо всіх звірів типу "Ссавець"
+print("=== Ссавці ===")
+cursor1.execute("SELECT * FROM Animals WHERE type = 'Ссавець'")
+for row in cursor1.fetchall():
+    print(row)
+
+# 7. Виводимо всі записи
+print("\n=== Усі тварини ===")
+cursor1.execute("SELECT * FROM Animals")
+for row in cursor1.fetchall():
+    print(row)
+
+# Закриваємо підключення
+conn1.close()
+
+
+# ============================================================
+# ЗАВДАННЯ 2. Робота з базою даних "FruitBasket"
+# ============================================================
+
+# 1. Підключення до бази даних
+conn2 = sqlite3.connect('FruitBasket.db')
+cursor2 = conn2.cursor()
+
+# 2. Створення таблиці Fruits
+cursor2.execute('''
+CREATE TABLE IF NOT EXISTS Fruits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    color TEXT
+)
+''')
+
+# 3. Очищення таблиці
+cursor2.execute("DELETE FROM Fruits")
+
+# 4. Додавання фруктів
+fruits = [
+    ("Яблуко", "Червоне"),
+    ("Банан", "Жовтий"),
+    ("Апельсин", "Помаранчевий")
+]
+cursor2.executemany("INSERT INTO Fruits (name, color) VALUES (?, ?)", fruits)
+conn2.commit()
+
+# 5. Змінюємо колір фрукта "Яблуко" на "Зелене"
+cursor2.execute("UPDATE Fruits SET color = 'Зелене' WHERE name = 'Яблуко'")
+conn2.commit()
+
+# 6. Вибираємо всі фрукти жовтого кольору
+print("\n=== Фрукти жовтого кольору ===")
+cursor2.execute("SELECT * FROM Fruits WHERE color = 'Жовтий'")
+for row in cursor2.fetchall():
+    print(row)
+
+# 7. Виводимо всі фрукти
+print("\n=== Усі фрукти ===")
+cursor2.execute("SELECT * FROM Fruits")
+for row in cursor2.fetchall():
+    print(row)
+
+# Закриваємо підключення
+conn2.close()
+
+print("\n✅ Завдання виконано успішно!")
